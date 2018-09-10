@@ -54,11 +54,11 @@ def use_panda_apply(dataset, **kwargs):
     dataset['b'] = dataset.apply(my_compute)
 
 @timeit
-def use_enumerate(dataset, **kwargs):
+def use_zip(dataset, **kwargs):
     """ Use enumerate function to iterate"""
     b = np.empty(len(dataset))
-    for i, (x) in enumerate(dataset.a):
-        b[i] = my_compute(x)
+    for i, (x) in enumerate(zip(dataset.a)):
+        b[i] = my_compute(x[0])
     dataset['b'] = b
 
 @timeit
@@ -70,11 +70,10 @@ def use_numpy_for_loop(dataset, **kwargs):
         b[i] = my_compute(original[i])
     dataset['b'] = b
 
-def time_this(func, method_name):
+def time_this(func, method_name, N=1000):
     """ Execute the given function 100 times and measure the execution time for each run.
         Returns a dictionary containing the statistics based on the execution times
     """
-    N = 1000
     repeats = 100
     a = np.repeat(1000, N)
     pd_dataset = pd.DataFrame({'a': a})
@@ -84,15 +83,16 @@ def time_this(func, method_name):
         func(pd_dataset.copy(), log_time=timing)
     return {'method': method_name, 'average': np.average(timing), 'min': np.min(timing), 'max': np.max(timing)}
 
-all_timing = pd.DataFrame()
-all_timing = all_timing.append([time_this(use_column,'use_column')])
-all_timing = all_timing.append([time_this(use_panda_apply,'use_panda_apply')])
+def measure_time(dataset_size):
+    all_timing = pd.DataFrame()
+    all_timing = all_timing.append([time_this(use_column,'use_column')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_panda_apply,'use_panda_apply')], N=dataset_size)
 
-all_timing = all_timing.append([time_this(use_for_loop_loc,'use_for_loop_loc')])
-all_timing = all_timing.append([time_this(use_for_loop_at,'use_for_loop_at')])
-all_timing = all_timing.append([time_this(use_for_loop_iat,'use_for_loop_iat')])
-all_timing = all_timing.append([time_this(use_numpy_for_loop,'use_numpy_for_loop')])
-all_timing = all_timing.append([time_this(use_panda_iterrows,'use_panda_iterrows')])
-all_timing = all_timing.append([time_this(use_enumerate,'use_enumerate')])
-print(all_timing[['method', 'average', 'min', 'max']])
+    all_timing = all_timing.append([time_this(use_for_loop_loc,'use_for_loop_loc')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_for_loop_at,'use_for_loop_at')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_for_loop_iat,'use_for_loop_iat')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_numpy_for_loop,'use_numpy_for_loop')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_panda_iterrows,'use_panda_iterrows')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_zip,'use_zip')])
+    print(all_timing[['method', 'average', 'min', 'max']])
 
