@@ -85,14 +85,13 @@ def time_this(func, method_name, N=1000):
 
 def measure_time(dataset_size):
     all_timing = pd.DataFrame()
-    all_timing = all_timing.append([time_this(use_column,'use_column')], N=dataset_size)
-    all_timing = all_timing.append([time_this(use_panda_apply,'use_panda_apply')], N=dataset_size)
-
-    all_timing = all_timing.append([time_this(use_for_loop_loc,'use_for_loop_loc')], N=dataset_size)
-    all_timing = all_timing.append([time_this(use_for_loop_at,'use_for_loop_at')], N=dataset_size)
-    all_timing = all_timing.append([time_this(use_for_loop_iat,'use_for_loop_iat')], N=dataset_size)
-    all_timing = all_timing.append([time_this(use_numpy_for_loop,'use_numpy_for_loop')], N=dataset_size)
-    all_timing = all_timing.append([time_this(use_panda_iterrows,'use_panda_iterrows')], N=dataset_size)
+    all_timing = all_timing.append([time_this(use_column,'use_column'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_panda_apply,'use_panda_apply'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_for_loop_loc,'use_for_loop_loc'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_for_loop_at,'use_for_loop_at'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_for_loop_iat,'use_for_loop_iat'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_numpy_for_loop,'use_numpy_for_loop'), N=dataset_size])
+    all_timing = all_timing.append([time_this(use_panda_iterrows,'use_panda_iterrows'), N=dataset_size])
     all_timing = all_timing.append([time_this(use_zip,'use_zip')])
     print(all_timing[['method', 'average', 'min', 'max']])
 
